@@ -1,13 +1,16 @@
-{% extends "account/base_entrance.html" %}
+{% extends "account/base.html" %}
+
 {% load i18n %}
 {% load allauth account %}
+
 {% block head_title %}
     {% trans "Sign In" %}
 {% endblock head_title %}
-{% block content %}
-    {% element h1 %}
-        {% trans "Sign In" %}
-    {% endelement %}
+
+{% block inner_content %}
+    <hr>
+    <h2 class="logo-font mb-4">Sign In</h2>
+    <hr>
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
             <a href="{{ signup_url }}">
@@ -22,14 +25,15 @@
         {% element form form=form method="post" action=login_url tags="entrance,login" %}
             {% slot body %}
                 {% csrf_token %}
-                {% element fields form=form unlabeled=True %}
-                {% endelement %}
+                {{ form|crispy }}
                 {{ redirect_field }}
             {% endslot %}
             {% slot actions %}
-                {% element button type="submit" tags="prominent,login" %}
+                <button type="submit" class="primaryAction">
                     {% trans "Sign In" %}
-                {% endelement %}
+                </button>
+                {% url 'home' as home_url %}
+                <a href="{{ home_url }}" class="btn btn-outline-black rounded-0">{% trans "Home" %}</a>
             {% endslot %}
         {% endelement %}
     {% endif %}
@@ -52,7 +56,7 @@
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}
-{% endblock content %}
+{% endblock inner_content %}
 {% block extra_body %}
     {{ block.super }}
     {% if PASSKEY_LOGIN_ENABLED %}
